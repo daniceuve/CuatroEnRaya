@@ -75,7 +75,7 @@ public class Tablero {
     private boolean comprobarHorizontal(int fila, Ficha ficha) {
         int fichasConsecutivas = 0;
         for (int i = 0; i < FILAS; i++) {
-            if (casillas[i][fila].getFicha().equals(ficha)) {
+            if (casillas[i][fila].estaOcupada() && casillas[i][fila].getFicha().equals(ficha)) {
                 fichasConsecutivas++;
             }
             else fichasConsecutivas = 0;
@@ -85,7 +85,7 @@ public class Tablero {
     private boolean comprobarVertical(int columna, Ficha ficha) {
         int fichasConsecutivas = 0;
         for (int i = 0; i < FILAS; i++) {
-            if (casillas[columna][i].getFicha().equals(ficha)) {
+            if (casillas[columna][i].estaOcupada() && casillas[columna][i].getFicha().equals(ficha)) {
                 fichasConsecutivas++;
             }
             else fichasConsecutivas = 0;
