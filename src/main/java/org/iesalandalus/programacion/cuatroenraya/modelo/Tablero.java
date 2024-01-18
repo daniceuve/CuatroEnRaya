@@ -1,5 +1,7 @@
 package org.iesalandalus.programacion.cuatroenraya.modelo;
 
+import javax.naming.OperationNotSupportedException;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Tablero {
@@ -72,6 +74,9 @@ public class Tablero {
         return filaVacia;
     }
 
+    private boolean objetivoAlcanzado(int fichasIgualesConsecutivas) {
+        return fichasIgualesConsecutivas <= FICHAS_IGUALES_CONSECUTIVAS_NECESARIAS;
+    }
     private boolean comprobarHorizontal(int fila, Ficha ficha) {
         int fichasConsecutivas = 0;
         for (int i = 0; i < FILAS; i++) {
@@ -80,8 +85,9 @@ public class Tablero {
             }
             else fichasConsecutivas = 0;
         }
-        return fichasConsecutivas >= FICHAS_IGUALES_CONSECUTIVAS_NECESARIAS;
+        return objetivoAlcanzado(fichasConsecutivas);
     }
+
     private boolean comprobarVertical(int columna, Ficha ficha) {
         int fichasConsecutivas = 0;
         for (int i = 0; i < FILAS; i++) {
@@ -90,12 +96,67 @@ public class Tablero {
             }
             else fichasConsecutivas = 0;
         }
-        return fichasConsecutivas >= FICHAS_IGUALES_CONSECUTIVAS_NECESARIAS;
+        return objetivoAlcanzado(fichasConsecutivas);
     }
 
-    /*
-    private boolean objetivoAlcanzado(int fichasIgualesConsecutivas) {
-    }*/
+    private int menor(int fila, int columna) {
+        return Math.min(fila, columna);
+    }
 
+    private boolean comprobarDiagonalNE(int filaSemilla, int columnaSemilla, Ficha ficha) {
+        int desplazamiento = menor(filaSemilla, columnaSemilla);
+        int filaInicial = filaSemilla - desplazamiento;
+        int columnaInicial = columnaSemilla - desplazamiento;
+        int i = filaInicial;
+        int j = columnaInicial;
+        int fichasConsecutivas = 0;
+        while (i <= FILAS || j <= COLUMNAS) {
+            if (casillas[j][i].estaOcupada() && casillas[j][i].getFicha().equals(ficha))
+                fichasConsecutivas++;
+            else fichasConsecutivas = 0;
+            i++;
+            j++;
+        }
+        return objetivoAlcanzado(fichasConsecutivas);
+    }
+    private boolean comprobarDiagonalNO(int filaSemilla, int columnaSemilla, Ficha ficha) {
+        int desplazamiento = menor(filaSemilla, (COLUMNAS - 1 - columnaSemilla));
+        int filaInicial = filaSemilla - desplazamiento;
+        int columnaInicial = columnaSemilla + desplazamiento;
+        int i = filaInicial;
+        int j = columnaInicial;
+        int fichasConsecutivas = 0;
+        while (i <= FILAS || j >= 0) {
+            if (casillas[j][i].estaOcupada() && casillas[j][i].getFicha().equals(ficha))
+                fichasConsecutivas++;
+            else fichasConsecutivas = 0;
+            i++;
+            j--;
+        }
+        return objetivoAlcanzado(fichasConsecutivas);
+    }
 
+    private boolean comprobarTirada(int fila, int columna) {
+        Ficha ficha = casillas[columna][fila].getFicha();
+        return (comprobarHorizontal(fila, ficha) || comprobarVertical(columna, ficha) || comprobarDiagonalNE(fila, columna, ficha) || comprobarDiagonalNO(fila, columna, ficha));
+    }
+
+    public boolean introducirFicha(int columna, Ficha ficha) throws OperationNotSupportedException {
+
+        comprobarFicha(ficha);
+        comprobarColumna(columna);
+        if (columnaLlena(columna)) {
+            throw new IllegalArgumentException("La columna esta llena.");
+        }
+
+        casillas[columna][getPrimeraFilaVacia(columna)].setFicha(ficha);
+
+        return comprobarTirada(getPrimeraFilaVacia(columna), columna);
+
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Tablero[casillas=%s]", Arrays.toString(this.casillas));
+    }
 }
