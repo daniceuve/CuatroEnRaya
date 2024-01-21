@@ -59,7 +59,7 @@ public class Tablero {
     }
     private void comprobarColumna(int columna) {
         if (columna <= 0 || columna > COLUMNAS)
-            throw new IllegalArgumentException("La columna es incorrecta.");
+            throw new IllegalArgumentException("Columna incorrecta.");
     }
 
     private int getPrimeraFilaVacia (int columna) {
@@ -157,6 +157,21 @@ public class Tablero {
 
     @Override
     public String toString() {
-        return String.format("Tablero[casillas=%s]", Arrays.toString(this.casillas));
+
+        StringBuilder tablero = new StringBuilder();
+        for (int i = 0; i < FILAS; i++) {
+            tablero.append("|");
+            for (int j = 0; j < COLUMNAS; j++) {
+                if (casillas[j][i].estaOcupada()) {
+                    tablero.append(casillas[j][i].getFicha());
+                } else {
+                    tablero.append(" ");
+                }
+            }
+            tablero.append("|\n");
+        }
+        tablero.append(" -------\n");
+        return tablero.toString();
+
     }
 }
