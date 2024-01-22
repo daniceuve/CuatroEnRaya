@@ -16,7 +16,7 @@ public class Casilla {
     public void setFicha(Ficha ficha) throws OperationNotSupportedException{
         if (estaOcupada())
             throw new OperationNotSupportedException("La casilla ya contiene una ficha.");
-        else this.ficha = Objects.requireNonNull(ficha, "No se puede poner una ficha nula.");
+        this.ficha = Objects.requireNonNull(ficha, "No se puede poner una ficha nula.");
     }
 
     public boolean estaOcupada() {

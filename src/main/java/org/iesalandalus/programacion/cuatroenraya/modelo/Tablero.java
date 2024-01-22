@@ -21,7 +21,7 @@ public class Tablero {
 
     private boolean columnaVacia(int columna) {
         boolean comprobarVacio = true;
-        for (int i = 0; i <= FILAS - 1 && comprobarVacio; i++) {
+        for (int i = 0; i < FILAS && comprobarVacio; i++) {
             if (casillas[columna - 1][i].estaOcupada())
                 comprobarVacio = false;
         }
@@ -30,7 +30,7 @@ public class Tablero {
 
     public boolean estaVacio() {
         boolean comprobarVacio = true;
-        for (int i = 0; i <= FILAS - 1 && comprobarVacio; i++) {
+        for (int i = 0; i < FILAS && comprobarVacio; i++) {
             if (!columnaVacia(i))
                 comprobarVacio = false;
         }
@@ -38,8 +38,8 @@ public class Tablero {
     }
     private boolean columnaLlena(int columna) {
         boolean comprobarLleno = true;
-        for (int i = 0; i <= FILAS - 1 && comprobarLleno; i++) {
-            if (!casillas[columna - 1][i].estaOcupada())
+        for (int i = 0; i < FILAS && comprobarLleno; i++) {
+            if (!casillas[columna][i].estaOcupada())
                 comprobarLleno = false;
         }
         return comprobarLleno;
@@ -47,7 +47,7 @@ public class Tablero {
 
     public boolean estaLleno() {
         boolean comprobarLleno = true;
-        for (int i = 0; i <= FILAS - 1 && comprobarLleno; i++) {
+        for (int i = 0; i < FILAS && comprobarLleno; i++) {
             if (!columnaLlena(i))
                 comprobarLleno = false;
         }
@@ -159,7 +159,7 @@ public class Tablero {
     public String toString() {
 
         StringBuilder tablero = new StringBuilder();
-        for (int i = 0; i < FILAS; i++) {
+        for (int i = FILAS - 1; i >= 0; i--) {
             tablero.append("|");
             for (int j = 0; j < COLUMNAS; j++) {
                 if (casillas[j][i].estaOcupada()) {
