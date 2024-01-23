@@ -136,7 +136,7 @@ public class Tablero {
 
     private boolean comprobarTirada(int fila, int columna) {
         Ficha ficha = casillas[columna][fila].getFicha();
-        return true;//(comprobarHorizontal(fila, ficha) || comprobarVertical(columna, ficha) || comprobarDiagonalNE(fila, columna, ficha) || comprobarDiagonalNO(fila, columna, ficha));
+        return (comprobarHorizontal(fila, ficha) || comprobarVertical(columna, ficha) || comprobarDiagonalNE(fila, columna, ficha) || comprobarDiagonalNO(fila, columna, ficha));
     }
 
     public boolean introducirFicha(int columna, Ficha ficha) throws OperationNotSupportedException {
