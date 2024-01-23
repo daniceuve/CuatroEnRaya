@@ -1,7 +1,6 @@
 package org.iesalandalus.programacion.cuatroenraya.modelo;
 
 import javax.naming.OperationNotSupportedException;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Tablero {
@@ -9,9 +8,10 @@ public class Tablero {
     public static final int FILAS = 6;
     public static final int COLUMNAS = 7;
     public static final int FICHAS_IGUALES_CONSECUTIVAS_NECESARIAS = 4;
-    private Casilla[][] casillas = new Casilla[COLUMNAS][FILAS];
+    private final Casilla[][] casillas;
 
     public Tablero() {
+        casillas = new Casilla[COLUMNAS][FILAS];
         for (int i = 0; i < COLUMNAS; i++) {
             for (int j = 0; j < FILAS; j++) {
              casillas[i][j] = new Casilla();
@@ -22,7 +22,7 @@ public class Tablero {
     private boolean columnaVacia(int columna) {
         boolean comprobarVacio = true;
         for (int i = 0; i < FILAS && comprobarVacio; i++) {
-            if (casillas[columna - 1][i].estaOcupada())
+            if (casillas[columna][i].estaOcupada())
                 comprobarVacio = false;
         }
         return comprobarVacio;
@@ -31,14 +31,13 @@ public class Tablero {
     public boolean estaVacio() {
         boolean comprobarVacio = true;
         for (int i = 0; i < FILAS && comprobarVacio; i++) {
-            if (!columnaVacia(i))
-                comprobarVacio = false;
+            comprobarVacio = columnaVacia(i);
         }
         return comprobarVacio;
     }
     private boolean columnaLlena(int columna) {
         boolean comprobarLleno = true;
-        for (int i = 0; i < FILAS && comprobarLleno; i++) {
+        for (int i = 0; i < COLUMNAS && comprobarLleno; i++) {
             if (!casillas[columna][i].estaOcupada())
                 comprobarLleno = false;
         }
@@ -47,9 +46,8 @@ public class Tablero {
 
     public boolean estaLleno() {
         boolean comprobarLleno = true;
-        for (int i = 0; i < FILAS && comprobarLleno; i++) {
-            if (!columnaLlena(i))
-                comprobarLleno = false;
+        for (int i = 0; i < COLUMNAS && comprobarLleno; i++) {
+            comprobarLleno = columnaLlena(i);
         }
         return comprobarLleno;
     }
@@ -58,7 +56,7 @@ public class Tablero {
         Objects.requireNonNull(ficha, "La ficha no puede ser nula.");
     }
     private void comprobarColumna(int columna) {
-        if (columna <= 0 || columna > COLUMNAS)
+        if (columna < 0 || columna >= COLUMNAS)
             throw new IllegalArgumentException("Columna incorrecta.");
     }
 
@@ -66,7 +64,7 @@ public class Tablero {
         int filaVacia = 0;
         boolean filaLLena = true;
         for (int i = 0; i < FILAS && filaLLena; i++ ) {
-            if (casillas[columna][i].estaOcupada()) {
+            if (!casillas[columna][i].estaOcupada()) {
                 filaVacia = i;
                 filaLLena = false;
             }
@@ -138,7 +136,7 @@ public class Tablero {
 
     private boolean comprobarTirada(int fila, int columna) {
         Ficha ficha = casillas[columna][fila].getFicha();
-        return (comprobarHorizontal(fila, ficha) || comprobarVertical(columna, ficha) || comprobarDiagonalNE(fila, columna, ficha) || comprobarDiagonalNO(fila, columna, ficha));
+        return true;//(comprobarHorizontal(fila, ficha) || comprobarVertical(columna, ficha) || comprobarDiagonalNE(fila, columna, ficha) || comprobarDiagonalNO(fila, columna, ficha));
     }
 
     public boolean introducirFicha(int columna, Ficha ficha) throws OperationNotSupportedException {
@@ -146,12 +144,14 @@ public class Tablero {
         comprobarFicha(ficha);
         comprobarColumna(columna);
         if (columnaLlena(columna)) {
-            throw new IllegalArgumentException("La columna esta llena.");
+            throw new OperationNotSupportedException("Columna llena.");
         }
 
-        casillas[columna][getPrimeraFilaVacia(columna)].setFicha(ficha);
+        int fila = getPrimeraFilaVacia(columna);
 
-        return comprobarTirada(getPrimeraFilaVacia(columna), columna);
+        casillas[columna][fila].setFicha(ficha);
+
+        return comprobarTirada(fila, columna);
 
     }
 

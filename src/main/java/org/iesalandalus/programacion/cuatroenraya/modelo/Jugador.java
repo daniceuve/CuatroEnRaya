@@ -1,5 +1,7 @@
 package org.iesalandalus.programacion.cuatroenraya.modelo;
 
+import java.util.Objects;
+
 public record Jugador(String nombre, Ficha colorFichas) {
 
     public Jugador{
@@ -8,21 +10,17 @@ public record Jugador(String nombre, Ficha colorFichas) {
     }
 
     private void validarNombre(String nombre) {
-        if (nombre == null) {
-            throw new NullPointerException("El nombre no puede ser nulo.");
-        }
+        Objects.requireNonNull(nombre,"El nombre no puede ser nulo.");
         if (nombre.matches("\\s*"))
             throw new IllegalArgumentException("El nombre no puede estar en blanco.");
 
     }
     private void validarColorFichas(Ficha ficha) {
-        if (ficha == null) {
-            throw new NullPointerException("El color de las fichas no puede ser nulo.");
-        }
+        Objects.requireNonNull(ficha, "El color de las fichas no puede ser nulo.");
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", this.nombre, this.colorFichas);
+        return String.format("%s (%s)", nombre, colorFichas);
     }
 }

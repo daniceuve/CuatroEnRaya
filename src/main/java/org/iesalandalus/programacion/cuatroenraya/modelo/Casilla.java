@@ -25,8 +25,6 @@ public class Casilla {
 
     @Override
     public String toString() {
-        if (estaOcupada())
-            return String.format("%s", this.ficha);
-        else return String.format(" ", this.ficha);
+        return estaOcupada() ? ficha.toString() : " ";
     }
 }
